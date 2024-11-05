@@ -20,8 +20,7 @@ const pagoSchema = new mongoose.Schema({
     },
     estado: {
         type: String,
-        enum: ['PENDIENTE', 'COMPLETADO', 'CANCELADO'],
-        default: 'PENDIENTE',
+        enum: ['TARDE', 'COMPLETADO', 'INCOMPLETO']
     },
 });
 

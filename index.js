@@ -57,6 +57,8 @@ app.post('/login', async (req, res) => {
 
     const token = jwt.sign({ id: user._id, email: user.email, rol: user.rol }, JWT_SECRET, { expiresIn: '1h' });
     res.status(200).json({ message: 'Inicio de sesión exitoso.', token });
+
+    //Si inicio de sesion correcto se genera un TOKEN
 });
 
 // 3. Endpoint de creación de pago

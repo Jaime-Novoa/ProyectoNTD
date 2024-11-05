@@ -12,17 +12,21 @@ exports.listarPagos = async (req, res) => {
 
 // Función para crear un nuevo pago
 exports.crearPago = async (req, res) => {
-    const { monto, concepto } = req.body;
+    const { monto, concepto, estado } = req.body;
 
-    if (!monto || !concepto) {
-        return res.status(400).json({ message: 'Monto y concepto son obligatorios.' });
+    if (!monto || !concepto || !estado) {
+        return res.status(400).json({ message: 'Monto, concepto y estado son obligatorios.' });
     }
+    if (estado != 'TARDE' && estado != 'COMPLETADO' && estado != 'INCOMPLETO'){
+        return res.status(400).json({ message: 'Es estado solo puede ser: TARDE, COMPLETADO ó INCOMPLETO'})
+    }
+    
 
     const nuevoPago = new Pago({
         usuarioId: req.user.id,
         monto,
         concepto,
-        estado: 'PENDIENTE',
+        estado,
     });
 
     try {
