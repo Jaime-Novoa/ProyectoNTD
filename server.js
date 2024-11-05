@@ -1,45 +1,38 @@
+// server.js
 const express = require('express');
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('./models/user');
+const User = require('./src/models/user');
+const Pago = require('./src/models/pago');
+const authenticateToken = require('./middleware/auth');
 
 const app = express();
 app.use(express.json());
 
-// Configura tu conexión a MongoDB
-const mongoURI = 'mongodb://localhost:27017/tu_base_de_datos'; // Cambia esto según tu configuración
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('Conectado a MongoDB'))
-    .catch(err => console.error('Error al conectar a MongoDB', err));
+const JWT_SECRET = 'tu_clave_secreta_segura';
 
-const JWT_SECRET = 'your_secret_key'; // Usa una clave secreta segura en producción
+// Conexión a MongoDB
+mongoose.connect('mongodb://localhost:27017/mi_base_de_datos', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+.then(() => console.log('Conectado a MongoDB'))
+.catch(err => console.error('Error al conectar a MongoDB:', err));
 
-// 1. Endpoint para registrar nuevos usuarios
+// 1. Endpoint para registrar un nuevo usuario
 app.post('/register', async (req, res) => {
-    const { nombreCompleto, email, password, rol } = req.body;
+    const { nombreCompleto, email, password } = req.body;
 
-    // Validar campos obligatorios
     if (!nombreCompleto || !email || !password) {
         return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
     }
 
-    // Verificar si el usuario ya existe
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-        return res.status(409).json({ message: 'El correo electrónico ya está registrado.' });
-    }
-
-    // Crear el nuevo usuario
-    const newUser = new User({
-        nombreCompleto,
-        email,
-        passwordHash: password, // Se encriptará en el hook pre-save
-        rol,
-    });
-
     try {
-        await newUser.save();
-        res.status(201).json({ message: 'Usuario registrado exitosamente.', user: newUser });
+        const passwordHash = await bcrypt.hash(password, 10);
+        const nuevoUsuario = new User({ nombreCompleto, email, passwordHash });
+        await nuevoUsuario.save();
+        res.status(201).json({ message: 'Usuario registrado exitosamente.' });
     } catch (error) {
         res.status(500).json({ message: 'Error al registrar el usuario.' });
     }
@@ -49,27 +42,47 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
-    // Validar campos obligatorios
     if (!email || !password) {
         return res.status(400).json({ message: 'Correo electrónico y contraseña son obligatorios.' });
     }
 
-    // Buscar el usuario por correo
     const user = await User.findOne({ email });
     if (!user) {
         return res.status(401).json({ message: 'Correo electrónico o contraseña incorrectos.' });
     }
 
-    // Verificar la contraseña
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
         return res.status(401).json({ message: 'Correo electrónico o contraseña incorrectos.' });
     }
 
-    // Generar token JWT
     const token = jwt.sign({ id: user._id, email: user.email, rol: user.rol }, JWT_SECRET, { expiresIn: '1h' });
 
     res.status(200).json({ message: 'Inicio de sesión exitoso.', token });
+});
+
+// 3. Endpoint de creación de pago
+app.post('/pagos', authenticateToken, async (req, res) => {
+    const { monto, concepto } = req.body;
+
+    if (!monto || !concepto) {
+        return res.status(400).json({ message: 'Monto y concepto son obligatorios.' });
+    }
+
+    const nuevoPago = new Pago({
+        usuarioId: req.user.id, // Usa el ID del usuario autenticado
+        monto,
+        concepto,
+        fechaPago: Date.now(),
+        estado: 'PENDIENTE',
+    });
+
+    try {
+        const pagoGuardado = await nuevoPago.save();
+        res.status(201).json({ message: 'Pago creado exitosamente.', pago: pagoGuardado });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al crear el pago.' });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
