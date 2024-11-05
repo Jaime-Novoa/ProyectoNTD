@@ -32,19 +32,24 @@ const userSchema = new mongoose.Schema({
     },
 });
 
-// Método para encriptar la contraseña antes de guardar el usuario
+/* Método para encriptar la contraseña antes de guardar el usuario
 userSchema.pre('save', async function (next) {
     if (this.isModified('passwordHash')) {
         this.passwordHash = await bcrypt.hash(this.passwordHash, 10);
     }
     next();
-});
+});*/
+
+// Método para establecer la contraseña hasheada
+userSchema.methods.setPassword = async function (password) {
+    this.passwordHash = await bcrypt.hash(password, 10);
+};
 
 // Método para comparar contraseñas
 userSchema.methods.comparePassword = function (password) {
     return bcrypt.compare(password, this.passwordHash);
 };
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model('Usuario', userSchema);
 
 module.exports = User;
