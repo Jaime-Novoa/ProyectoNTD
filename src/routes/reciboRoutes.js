@@ -1,6 +1,6 @@
 const express = require('express');
 const PDFDocument = require('pdfkit');
-const Pago = require('../src/models/pago');
+const Pago = require('../models/pago');
 const router = express.Router();
 
 router.post('/:pagoId', async (req, res) => {

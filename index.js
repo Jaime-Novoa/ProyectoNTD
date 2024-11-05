@@ -5,9 +5,9 @@ const jwt = require('jsonwebtoken');
 const User = require('./src/models/user');
 const Pago = require('./src/models/pago');
 const authenticateToken = require('./middleware/auth');
-const pagoRoutes = require('./routes/pagoRoutes');
-const historialRoutes = require('./routes/historial');
-const reciboRoutes = require('./routes/reciboRoutes');
+const pagoRoutes = require('./src/routes/pagoRoutes');
+const historialRoutes = require('./src/routes/historialRoutes');
+const reciboRoutes = require('./src/routes/reciboRoutes');
 
 
 const app = express();
@@ -90,7 +90,7 @@ app.post('/pagos', authenticateToken, async (req, res) => {
 
 //Endpoint para filtrar los pago
 app.use('/api/historial', historialRoutes);//Ruta para historial de pagos
-app.use('/api', pagoRoutes);//Ruta para pagos
+app.use('/api/pagos', pagoRoutes);//Ruta para pagos
 app.use('/api/recibos', reciboRoutes);//Ruta para generar PDF
 
 const PORT = process.env.PORT || 3000;

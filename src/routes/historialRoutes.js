@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Pago = require('../models/Pago'); // Importa el modelo de Pago
+const Pago = require('../models/pago'); // Importa el modelo de Pago
 
 // Endpoint para listar el historial de pagos con filtros avanzados
 router.get('/historial', async (req, res) => {
