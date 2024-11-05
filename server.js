@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const User = require('./src/models/user');
 const Pago = require('./src/models/pago');
 const authenticateToken = require('./middleware/auth');
+const pagoRoutes = require('./routes/pagoRoutes');
+
 
 const app = express();
 app.use(express.json());
@@ -84,6 +86,8 @@ app.post('/pagos', authenticateToken, async (req, res) => {
         res.status(500).json({ message: 'Error al crear el pago.' });
     }
 });
+
+app.use('/api', pagoRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
