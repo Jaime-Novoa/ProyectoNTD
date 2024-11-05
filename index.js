@@ -1,27 +1,22 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const connectDB = require('./config/db'); // Asegúrate de importar la función de conexión
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('./src/models/user');
 const Pago = require('./src/models/pago');
-const authenticateToken = require('./middleware/auth');
+const authenticateToken = require('./src/middleware/auth');
 const pagoRoutes = require('./src/routes/pagoRoutes');
 const historialRoutes = require('./src/routes/historialRoutes');
 const reciboRoutes = require('./src/routes/reciboRoutes');
-
-
 const app = express();
+const PORT = process.env.PORT || 3000;
+
 app.use(express.json());
 
 const JWT_SECRET = 'tu_clave_secreta_segura';
 
-// Conexión a MongoDB
-mongoose.connect('mongodb://localhost:27017/mi_base_de_datos', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-.then(() => console.log('Conectado a MongoDB'))
-.catch(err => console.error('Error al conectar a MongoDB:', err));
+// Conexión a MongoDB usando la función de conexión
+connectDB();
 
 // 1. Endpoint para registrar un nuevo usuario
 app.post('/register', async (req, res) => {
@@ -54,13 +49,12 @@ app.post('/login', async (req, res) => {
         return res.status(401).json({ message: 'Correo electrónico o contraseña incorrectos.' });
     }
 
-    const isPasswordValid = await user.comparePassword(password);
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
         return res.status(401).json({ message: 'Correo electrónico o contraseña incorrectos.' });
     }
 
     const token = jwt.sign({ id: user._id, email: user.email, rol: user.rol }, JWT_SECRET, { expiresIn: '1h' });
-
     res.status(200).json({ message: 'Inicio de sesión exitoso.', token });
 });
 
@@ -88,12 +82,11 @@ app.post('/pagos', authenticateToken, async (req, res) => {
     }
 });
 
-//Endpoint para filtrar los pago
-app.use('/api/historial', historialRoutes);//Ruta para historial de pagos
-app.use('/api/pagos', pagoRoutes);//Ruta para pagos
-app.use('/api/recibos', reciboRoutes);//Ruta para generar PDF
+// Rutas para historial, pagos y recibos
+app.use('/api/historial', historialRoutes); // Ruta para historial de pagos
+app.use('/api/pagos', pagoRoutes); // Ruta para pagos
+app.use('/api/recibos', reciboRoutes); // Ruta para generar PDF
 
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor en funcionamiento en el puerto ${PORT}`);
 });
