@@ -1,4 +1,3 @@
-// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
@@ -7,6 +6,7 @@ const User = require('./src/models/user');
 const Pago = require('./src/models/pago');
 const authenticateToken = require('./middleware/auth');
 const pagoRoutes = require('./routes/pagoRoutes');
+const historialRoutes = require('./routes/historial');
 
 
 const app = express();
@@ -87,7 +87,8 @@ app.post('/pagos', authenticateToken, async (req, res) => {
     }
 });
 
-app.use('/api', pagoRoutes);
+app.use('/api/historial', historialRoutes);//Ruta para historial de pagos
+app.use('/api', pagoRoutes);//Ruta para pagos
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
