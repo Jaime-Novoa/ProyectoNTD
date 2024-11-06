@@ -7,7 +7,7 @@ router.post('/:pagoId', async (req, res) => {
     const { pagoId } = req.params;
 
     try {
-        const pago = await Pago.findById(pagoId).populate('usuarioId'); // Obtenemos el pago y el usuario asociado
+        const pago = await Pago.findById(pagoId).populate('usuarioId'); // Obtenemos el pago y el usuario asociado (Populate)
         if (!pago) {
             return res.status(404).json({ message: 'Pago no encontrado.' });
         }

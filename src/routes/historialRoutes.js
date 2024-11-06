@@ -2,20 +2,15 @@ const express = require('express');
 const router = express.Router();
 const Pago = require('../models/pago'); // Importa el modelo de Pago
 
-// Endpoint para listar el historial de pagos con filtros avanzados
+// Endpoint para listar los pagos con filtros avanzados
 router.get('/historial', async (req, res) => {
     try {
         // Filtros para la consulta
         const filtros = {};
 
-        // Filtro por ID de usuario (usuarioId)
-        if (req.query.usuarioId) {
-            filtros.usuarioId = req.query.usuarioId;
-        }
-
         // Filtro por estado del pago (PENDIENTE, COMPLETADO, CANCELADO)
         if (req.query.estado) {
-            filtros.estado = req.query.estado.toUpperCase(); // Asegura que esté en mayúsculas
+            filtros.estado = req.query.estado.toUpperCase(); // Debe estar en MAYÚSCULAS
         }
 
         // Filtro por rango de fechas
@@ -28,11 +23,11 @@ router.get('/historial', async (req, res) => {
 
         // Filtro por concepto específico
         if (req.query.concepto) {
-            filtros.concepto = new RegExp(req.query.concepto, 'i'); // Búsqueda sin distinción de mayúsculas
+            filtros.concepto = new RegExp(req.query.concepto, 'i');
         }
 
         // Ejecución de la consulta con los filtros aplicados
-        const pagos = await Pago.find(filtros).populate('usuarioId', 'nombre'); // `populate` para incluir info del usuario si es necesario
+        const pagos = await Pago.find(filtros);
         res.status(200).json(pagos);
     } catch (error) {
         console.error(error);

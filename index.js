@@ -1,5 +1,5 @@
 const express = require('express');
-const connectDB = require('./config/db'); // Asegúrate de importar la función de conexión
+const connectDB = require('./config/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('./src/models/usuario');
@@ -28,7 +28,7 @@ app.post('/register', async (req, res) => {
 
     try {
         //const passwordHash = await bcrypt.hash(password, 10);
-        const nuevoUsuario = new User({ nombreCompleto, email/*, passwordHash*/ });
+        const nuevoUsuario = new User({ nombreCompleto, email});
         await nuevoUsuario.setPassword(password); // Hashea y asigna el password 
         await nuevoUsuario.save();
         res.status(201).json({ message: 'Usuario registrado exitosamente.' });

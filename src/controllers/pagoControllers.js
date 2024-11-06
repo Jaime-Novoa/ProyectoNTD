@@ -1,7 +1,7 @@
 const Pago = require('../models/pago');
 
-// Función para listar pagos
-exports.listarPagos = async (req, res) => {
+// Función para mostrar pagos
+exports.mostrarPagos = async (req, res) => {
     try {
         const pagos = await Pago.find({ usuarioId: req.user.id });
         res.status(200).json(pagos);

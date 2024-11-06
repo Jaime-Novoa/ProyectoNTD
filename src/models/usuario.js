@@ -1,4 +1,3 @@
-// models/User.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
@@ -31,14 +30,6 @@ const userSchema = new mongoose.Schema({
         default: Date.now,
     },
 });
-
-/* Método para encriptar la contraseña antes de guardar el usuario
-userSchema.pre('save', async function (next) {
-    if (this.isModified('passwordHash')) {
-        this.passwordHash = await bcrypt.hash(this.passwordHash, 10);
-    }
-    next();
-});*/
 
 // Método para establecer la contraseña hasheada
 userSchema.methods.setPassword = async function (password) {
