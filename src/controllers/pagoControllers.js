@@ -36,4 +36,24 @@ exports.crearPago = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error al crear el pago.' });
     }
+
+    // Función para eliminar un pago
+const eliminarPago = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const pago = await Pago.findByPk(id);
+
+        if (!pago) {
+            return res.status(404).json({ message: 'Pago no encontrado' });
+        }
+
+        await pago.destroy();
+        res.status(200).json({ message: 'Pago eliminado con éxito' });
+    } catch (error) {
+        console.error('Error al eliminar el pago:', error);
+        res.status(500).json({ message: 'Error interno del servidor' });
+    }
+};
+
+module.exports = { eliminarPago };
 };

@@ -10,3 +10,9 @@ router.post('/', authenticateToken, pagoController.crearPago);
 router.get('/listar', authenticateToken , pagoController.mostrarPagos);
 
 module.exports = router;
+const { eliminarPago } = require('../controllers/pagosController');
+
+// Registrar la ruta DELETE /pagos/:id
+router.delete('/pagos/:id', eliminarPago);
+
+module.exports = router;
