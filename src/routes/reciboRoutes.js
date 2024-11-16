@@ -2,12 +2,13 @@ const express = require('express');
 const PDFDocument = require('pdfkit');
 const Pago = require('../models/pago');
 const router = express.Router();
+const token = require('../middleware/auth')
 
 router.post('/:pagoId', async (req, res) => {
     const { pagoId } = req.params;
 
     try {
-        const pago = await Pago.findById(pagoId).populate('usuarioId'); // Obtenemos el pago y el usuario asociado (Populate)
+        const pago = await Pago.findById(pagoId);
         if (!pago) {
             return res.status(404).json({ message: 'Pago no encontrado.' });
         }
