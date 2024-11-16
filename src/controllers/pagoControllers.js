@@ -2,8 +2,9 @@ const Pago = require('../models/pago');
 
 // Función para mostrar pagos
 exports.mostrarPagos = async (req, res) => {
+    console.log('Entra a mostrar pagos');
     try {
-        const pagos = await Pago.find({ usuarioId: req.user.id });
+        const pagos = await Pago.find();
         res.status(200).json(pagos);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener los pagos.' });
