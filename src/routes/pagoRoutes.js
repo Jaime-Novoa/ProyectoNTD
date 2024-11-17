@@ -3,6 +3,8 @@ const router = express.Router();
 const pagoController = require('../controllers/pagoControllers');
 const authenticateToken = require('../middleware/auth');
 const { eliminarPago } = require('../controllers/pagosController');
+const { editarPago } = require('../controllers/pagosController');
+
 
 // Ruta para crear un nuevo pago
 router.post('/', authenticateToken, pagoController.crearPago);
@@ -15,5 +17,7 @@ const { eliminarPago } = require('../controllers/pagosController');
 
 // Registrar la ruta DELETE /pagos/:id
 router.delete('/pagos/:id', eliminarPago);
+
+router.put('/pagos/:id', editarPago);
 
 module.exports = router;
