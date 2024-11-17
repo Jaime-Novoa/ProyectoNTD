@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const Pago = require('../models/pago'); // Importa el modelo de Pago
+const Pago = require('../models/pago');
+const authenticateToken = require('../middleware/auth');
 
 // Endpoint para listar los pagos con filtros avanzados
-router.get('/historial', async (req, res) => {
+router.get('/listar', authenticateToken, async (req, res) => {
     try {
         // Filtros para la consulta
         const filtros = {};
