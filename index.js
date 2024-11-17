@@ -10,7 +10,7 @@ const historialRoutes = require('./src/routes/historialRoutes');
 const reciboRoutes = require('./src/routes/reciboRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const apartamentosRoutes = require('./routes/apartamentos');
+const apartamentosRoutes = require('./src/routes/apartamentosRoutes');
 
 app.use(express.json());
 app.use('/api', apartamentosRoutes);
@@ -97,8 +97,8 @@ app.use('/api/pagos', pagoRoutes);
 // Ruta para generar PDF
 app.use('/api/recibos', reciboRoutes);
 
-// Ruta para editar apartamentos
-app.use ('/api/editar_apartamento', apartamentosRoutes);
+// Ruta para apartamentos
+app.use ('/api/apartamento', apartamentosRoutes);
 
 
 

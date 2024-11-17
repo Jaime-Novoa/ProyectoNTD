@@ -14,6 +14,10 @@ const pagoSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    apartamento: {
+        type: String,
+        reuired: true,
+    },
     fechaPago: {
         type: Date,
         default: Date.now,

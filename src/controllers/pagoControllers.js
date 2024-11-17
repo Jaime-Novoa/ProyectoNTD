@@ -13,7 +13,7 @@ exports.mostrarPagos = async (req, res) => {
 
 // Función para crear un nuevo pago
 exports.crearPago = async (req, res) => {
-    const { monto, concepto, estado } = req.body;
+    const { monto, concepto, apartamento, estado } = req.body;
 
     if (!monto || !concepto || !estado) {
         return res.status(400).json({ message: 'Monto, concepto y estado son obligatorios.' });
@@ -21,12 +21,15 @@ exports.crearPago = async (req, res) => {
     if (estado != 'TARDE' && estado != 'COMPLETADO' && estado != 'INCOMPLETO') {
         return res.status(400).json({ message: 'Es estado solo puede ser: TARDE, COMPLETADO ó INCOMPLETO' })
     }
-
+    const apartamentosValidos = ['101', '102', '201', '202'];
+    if (!apartamentosValidos.includes(apartamento)){
+        return res.status(400).json({message: 'El número de apartamento debe ser: 101, 102, 201 ó 202'})
+    }
 
     const nuevoPago = new Pago({
-        usuarioId: req.user.id,
         monto,
         concepto,
+        apartamento,
         estado,
     });
 
@@ -36,9 +39,11 @@ exports.crearPago = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: 'Error al crear el pago.' });
     }
+    
+};
 
-    // Función para eliminar un pago
-    const eliminarPago = async (req, res) => {
+// Función para eliminar un pago
+    /*const eliminarPago = async (req, res) => {
         try {
             const { id } = req.params;
             const pago = await Pago.findByPk(id);
@@ -53,10 +58,7 @@ exports.crearPago = async (req, res) => {
             console.error('Error al eliminar el pago:', error);
             res.status(500).json({ message: 'Error interno del servidor' });
         }
-    };
-
-    module.exports = { eliminarPago };
-};
+    };*/
 
 // Función para eliminar un pago
 exports.eliminarPago = async (req, res) => {
