@@ -7,17 +7,9 @@ const { editarPago } = require('../controllers/pagosController');
 
 
 // Ruta para crear un nuevo pago
-router.post('/', authenticateToken, pagoController.crearPago);
+router.post('/crear', authenticateToken, pagoController.crearPago);
 
-//Ruta para listar pagos
-router.get('/listar', authenticateToken , pagoController.mostrarPagos);
-
-module.exports = router;
-const { eliminarPago } = require('../controllers/pagosController');
-
-// Registrar la ruta DELETE /pagos/:id
-router.delete('/pagos/:id', eliminarPago);
-
-router.put('/pagos/:id', editarPago);
+// Ruta para eliminar pagos
+router.delete('/eliminar/:id', authenticateToken, pagoController.eliminarPago);
 
 module.exports = router;

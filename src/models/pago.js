@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 
 const pagoSchema = new mongoose.Schema({
-    usuarioId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-    },
     monto: {
         type: Number,
         required: true,
@@ -13,6 +8,11 @@ const pagoSchema = new mongoose.Schema({
     concepto: {
         type: String,
         required: true,
+    },
+    apartamento: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Apartamento', // Hace referencia al modelo Apartamento
+        required: true
     },
     fechaPago: {
         type: Date,

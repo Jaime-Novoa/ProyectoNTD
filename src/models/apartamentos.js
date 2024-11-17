@@ -6,16 +6,14 @@ const apartamentoSchema = new mongoose.Schema({
         required: true,
         unique: true,
     },
-    dueño: {
+    propietario: {
         type: String,
         required: true,
     },
-    telefono: {
+    numeroTelefono: {
         type: String,
         required: true,
-    }
-}, {
-    timestamps: true, // Agrega campos de createdAt y updatedAt
+    },
 });
 
 const Apartamento = mongoose.model('Apartamento', apartamentoSchema);

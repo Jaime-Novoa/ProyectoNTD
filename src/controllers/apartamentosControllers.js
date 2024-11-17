@@ -1,8 +1,8 @@
-const Apartamento = require('../models/Apartamento');
+const Apartamento = require('../models/apartamentos');
 
-const listarApartamentos = async (req, res) => {
+exports.listarApartamentos = async (req, res) => {
     try {
-        const apartamentos = await Apartamento.find(); // Obtiene todos los apartamentos
+        const apartamentos = await Apartamento.find();
         res.status(200).json(apartamentos);
     } catch (error) {
         console.error('Error al listar los apartamentos:', error);
@@ -10,9 +10,7 @@ const listarApartamentos = async (req, res) => {
     }
 };
 
-module.exports = { listarApartamentos };
-
-const editarApartamento = async (req, res) => {
+exports.editarApartamento = async (req, res) => {
     try {
         const { id } = req.params;
         const datosActualizados = req.body;
@@ -34,4 +32,23 @@ const editarApartamento = async (req, res) => {
     }
 };
 
-module.exports = { editarApartamento };
+exports.crearApartamento = async (req, res) => {
+    const { numero, propietario, numeroTelefono } = req.body;
+
+    if (!numero || !propietario || !numeroTelefono) {
+        return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
+    }
+
+    const nuevoApto = new Apartamento({
+        numero,
+        propietario,
+        numeroTelefono,
+    });
+
+    try {
+        const aptoGuardado = await nuevoApto.save();
+        res.status(201).json({ message: 'Apto creado', Apartamento: aptoGuardado });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al crear apto.' });
+    }
+}

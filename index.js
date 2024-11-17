@@ -10,7 +10,7 @@ const historialRoutes = require('./src/routes/historialRoutes');
 const reciboRoutes = require('./src/routes/reciboRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const apartamentosRoutes = require('./routes/apartamentos');
+const apartamentosRoutes = require('./src/routes/apartamentosRoutes');
 
 app.use(express.json());
 app.use('/api', apartamentosRoutes);
@@ -88,10 +88,19 @@ app.post('/pagos', authenticateToken, async (req, res) => {
     }
 });
 
-// Rutas para historial, pagos y recibos
-app.use('/api/historial', historialRoutes); // Ruta para historial de pagos
-app.use('/api/pagos', pagoRoutes); // Ruta para pagos
-app.use('/api/recibos', reciboRoutes); // Ruta para generar PDF
+// Ruta para historial de pagos
+app.use('/api/historial', historialRoutes);
+
+// Ruta para pagos
+app.use('/api/pagos', pagoRoutes);
+
+// Ruta para generar PDF
+app.use('/api/recibos', reciboRoutes);
+
+// Ruta para apartamentos
+app.use ('/api/apartamento', apartamentosRoutes);
+
+
 
 app.listen(PORT, () => {
     console.log(`Servidor en funcionamiento en el puerto ${PORT}`);
