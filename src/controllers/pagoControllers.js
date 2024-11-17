@@ -18,10 +18,10 @@ exports.crearPago = async (req, res) => {
     if (!monto || !concepto || !estado) {
         return res.status(400).json({ message: 'Monto, concepto y estado son obligatorios.' });
     }
-    if (estado != 'TARDE' && estado != 'COMPLETADO' && estado != 'INCOMPLETO'){
-        return res.status(400).json({ message: 'Es estado solo puede ser: TARDE, COMPLETADO ó INCOMPLETO'})
+    if (estado != 'TARDE' && estado != 'COMPLETADO' && estado != 'INCOMPLETO') {
+        return res.status(400).json({ message: 'Es estado solo puede ser: TARDE, COMPLETADO ó INCOMPLETO' })
     }
-    
+
 
     const nuevoPago = new Pago({
         usuarioId: req.user.id,
@@ -38,22 +38,39 @@ exports.crearPago = async (req, res) => {
     }
 
     // Función para eliminar un pago
-const eliminarPago = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const pago = await Pago.findByPk(id);
+    const eliminarPago = async (req, res) => {
+        try {
+            const { id } = req.params;
+            const pago = await Pago.findByPk(id);
 
-        if (!pago) {
-            return res.status(404).json({ message: 'Pago no encontrado' });
+            if (!pago) {
+                return res.status(404).json({ message: 'Pago no encontrado' });
+            }
+
+            await pago.destroy();
+            res.status(200).json({ message: 'Pago eliminado con éxito' });
+        } catch (error) {
+            console.error('Error al eliminar el pago:', error);
+            res.status(500).json({ message: 'Error interno del servidor' });
         }
+    };
 
-        await pago.destroy();
-        res.status(200).json({ message: 'Pago eliminado con éxito' });
-    } catch (error) {
-        console.error('Error al eliminar el pago:', error);
-        res.status(500).json({ message: 'Error interno del servidor' });
-    }
+    module.exports = { eliminarPago };
 };
 
-module.exports = { eliminarPago };
+// Función para eliminar un pago
+exports.eliminarPago = async (req, res) => {
+    const { id } = req.params; // ID del pago a eliminar
+
+    try {
+        const pagoEliminado = await Pago.findByIdAndDelete(id);
+        if (!pagoEliminado) {
+            return res.status(404).json({ message: 'Pago no encontrado.' });
+        }
+
+        res.status(200).json({ message: 'Pago eliminado exitosamente.', pago: pagoEliminado });
+    } catch (error) {
+        console.error('Error al eliminar el pago:', error);
+        res.status(500).json({ message: 'Error al eliminar el pago.' });
+    }
 };

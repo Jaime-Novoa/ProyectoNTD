@@ -88,10 +88,19 @@ app.post('/pagos', authenticateToken, async (req, res) => {
     }
 });
 
-// Rutas para historial, pagos y recibos
-app.use('/api/historial', historialRoutes); // Ruta para historial de pagos
-app.use('/api/pagos', pagoRoutes); // Ruta para pagos
-app.use('/api/recibos', reciboRoutes); // Ruta para generar PDF
+// Ruta para historial de pagos
+app.use('/api/historial', historialRoutes);
+
+// Ruta para pagos
+app.use('/api/pagos', pagoRoutes);
+
+// Ruta para generar PDF
+app.use('/api/recibos', reciboRoutes);
+
+// Ruta para editar apartamentos
+app.use ('/api/editar_apartamento', apartamentosRoutes);
+
+
 
 app.listen(PORT, () => {
     console.log(`Servidor en funcionamiento en el puerto ${PORT}`);

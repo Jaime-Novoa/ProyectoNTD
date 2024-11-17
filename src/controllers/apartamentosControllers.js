@@ -2,7 +2,7 @@ const Apartamento = require('../models/Apartamento');
 
 const listarApartamentos = async (req, res) => {
     try {
-        const apartamentos = await Apartamento.find(); // Obtiene todos los apartamentos
+        const apartamentos = await Apartamento.find();
         res.status(200).json(apartamentos);
     } catch (error) {
         console.error('Error al listar los apartamentos:', error);
