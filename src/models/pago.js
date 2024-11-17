@@ -10,8 +10,6 @@ const pagoSchema = new mongoose.Schema({
         required: true,
     },
     apartamento: {
-        /*type: String,
-        reuired: true,*/
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Apartamento', // Hace referencia al modelo Apartamento
         required: true
