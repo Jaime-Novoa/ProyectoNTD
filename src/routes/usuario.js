@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { eliminarUsuario } = require('../controllers/usuariosController');
+const  controller  = require('../controllers/usuarioController');
+const authenticateToken = require('../middleware/auth');
 
 // Ruta para eliminar un usuario
-router.delete('/usuarios/:id', eliminarUsuario);
+router.delete('/eliminar/:id', authenticateToken, controller.eliminarUsuario);
+
+// Ruta para listar usuarios
+router.get('/listar',authenticateToken, controller.listarUsuarios);
 
 module.exports = router;

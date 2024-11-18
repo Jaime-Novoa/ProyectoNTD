@@ -1,7 +1,6 @@
 const Pago = require('../models/pago');
 const Apartamento = require('../models/apartamentos');
 
-
 // Función para crear un nuevo pago
 exports.crearPago = async (req, res) => {
 
@@ -48,24 +47,6 @@ exports.crearPago = async (req, res) => {
 };
 
 // Función para eliminar un pago
-    /*const eliminarPago = async (req, res) => {
-        try {
-            const { id } = req.params;
-            const pago = await Pago.findByPk(id);
-
-            if (!pago) {
-                return res.status(404).json({ message: 'Pago no encontrado' });
-            }
-
-            await pago.destroy();
-            res.status(200).json({ message: 'Pago eliminado con éxito' });
-        } catch (error) {
-            console.error('Error al eliminar el pago:', error);
-            res.status(500).json({ message: 'Error interno del servidor' });
-        }
-    };*/
-
-// Función para eliminar un pago
 exports.eliminarPago = async (req, res) => {
     const { id } = req.params; // ID del pago a eliminar
 
@@ -79,5 +60,39 @@ exports.eliminarPago = async (req, res) => {
     } catch (error) {
         console.error('Error al eliminar el pago:', error);
         res.status(500).json({ message: 'Error al eliminar el pago.' });
+    }
+};
+
+// Función para editar un pago
+exports.editarPago = async (req, res) => {
+    const { id } = req.params; // ID del pago a editar
+    const { monto, concepto, apartamento, estado } = req.body; // Datos a actualizar
+
+    if (!monto || !concepto || !estado || !apartamento) {
+        return res.status(400).json({ message: 'Monto, concepto, estado y apartamento son obligatorios.' });
+    }
+
+    try {
+        // Buscar el apartamento por su número
+        const apto = await Apartamento.findOne({ numero: apartamento });
+        if (!apto) {
+            return res.status(404).json({ message: 'Apartamento no encontrado.' });
+        }
+
+        // Actualizar el pago
+        const pagoActualizado = await Pago.findByIdAndUpdate(
+            id,
+            { monto, concepto, apartamento: apto._id, estado },
+            { new: true } // Retorna el documento actualizado
+        );
+
+        if (!pagoActualizado) {
+            return res.status(404).json({ message: 'Pago no encontrado.' });
+        }
+
+        res.status(200).json({ message: 'Pago actualizado exitosamente.', pago: pagoActualizado });
+    } catch (error) {
+        console.error('Error al editar el pago:', error);
+        res.status(500).json({ message: 'Error al editar el pago.' });
     }
 };

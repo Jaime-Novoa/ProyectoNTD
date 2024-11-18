@@ -6,7 +6,6 @@ const authenticateToken = require('../middleware/auth');
 // Endpoint para listar los pagos con filtros avanzados
 router.get('/listar', authenticateToken, async (req, res) => {
     try {
-        // Filtros para la consulta
         const filtros = {};
 
         // Filtro por estado del pago (PENDIENTE, COMPLETADO, CANCELADO)
